@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include "Matrix.h"
 
 
 template<typename T>

@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <vector>
+#include <math.h>
 
 #include "objects/Object.h"
 #include "objects/Sphere.h"
@@ -8,10 +9,12 @@
 #include "output/Screen.h"
 #include "output/ImagePPM.h"
 #include "math/algorithms.h"
+#include "objects/Plane.h"
+#include "math/Matrix.h"
 
 
-const int width = 1920;
-const int height = 1080;
+const int width = 3840;
+const int height = 2160;
 
 
 bool intersect(const vec3<float>& O, const vec3<float>& dir, const std::vector<Object*> objects, float& distance_, int& index){
@@ -58,6 +61,8 @@ vec3<float> cast_ray(vec3<float> initial_light, const vec3<float>& O, const vec3
         vec3<float> normal = objects[index]->GetNormal(point_on_obj);
         vec3<float> reflected = reflect(dir, normal);
 
+        point_on_obj = point_on_obj + (1e-3 * normal);
+
         return cast_ray(light, point_on_obj, reflected, objects, depth - 1);
 
 }
@@ -71,7 +76,7 @@ void render(Camera camera, const std::vector<Object*>& objects){
             vec3 O = camera.getPosition();
             vec3 dir = camera.GetDir(j, i);
             dir.normalizes();
-            vec3<float> color = cast_ray(vec3<float>(1, 1, 1), O, dir, objects, 4);
+            vec3<float> color = cast_ray(vec3<float>(1, 1, 1), O, dir, objects, 256);
 
             screen->Draw(j, i, Pixel{(int)(color.GetX() / (1/255.)), (int)(color.GetY() / (1/255.)), (int)(color.GetZ() / (1/255.))});
 
@@ -85,10 +90,12 @@ void render(Camera camera, const std::vector<Object*>& objects){
 
 int main() {
 
-    Camera camera(vec3<float>(-80, 0, 0), vec3<float>(1, 0, 0), vec3<float>(0, 1, 0), vec3<float>(0, 0, 1), M_PI / 2.f, width, height);
+    Camera camera(vec3<float>(-50, 0, 0), vec3<float>(1, 0, 0), vec3<float>(0, 1, 0), vec3<float>(0, 0, 1), M_PI / 3.f, width, height);
     std::vector<Object*> objects;
-    objects.push_back(new Sphere(vec3<float>(15, 0, 0), 10, new Material(0.2, 0.4, 0.7)));
-    objects.push_back(new Sphere(vec3<float>(0, 15, 0), 10, new Material(0.6, 0.3, 0.1)));
+    objects.push_back(new Sphere(vec3<float>(0, 0, 0), 10, new Material(0.9686, 0.6286, 0.9098)));
+    objects.push_back(new Sphere(vec3<float>(0, 21, 18), 10, new Material(0.6118, 0.9804, 0.8039)));
+    objects.push_back(new Sphere(vec3<float>(-10, -21, 18), 10, new Material(0.9765, 1, 0.5098)));
+    //objects.push_back(new Plane(vec3<float>(0, 1, 0), -50, new Material(0.5, 0.1, 0.8)));
 
     render(camera, objects);
 

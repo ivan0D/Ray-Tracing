@@ -32,6 +32,10 @@ public:
         return normal;
     }
 
+    vec3<float> GetCenter(){
+        return this->position;
+    }
+
     float getRadius() const {
         return radius;
     }

@@ -19,6 +19,8 @@ public:
 
     virtual vec3<float> GetNormal(vec3<float> point) = 0;
 
+    virtual vec3<float> GetCenter() = 0;
+
 protected:
 
     Material* material;
